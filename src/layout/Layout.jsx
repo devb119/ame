@@ -8,7 +8,7 @@ const Dashboard = () => {
   const url = useLocation();
 
   useEffect(() => {
-    if (url.pathname === "/") navigate("/topics");
+    if (url.pathname === "/") navigate("/posts");
   }, [navigate, url.pathname]);
 
   return (
