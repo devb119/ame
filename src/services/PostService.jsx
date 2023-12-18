@@ -18,10 +18,15 @@ export async function getPosts(currentPage) {
 
 export async function getPostById(id) {
   let data = await findById("posts", id);
-  if (data.topicRef !== undefined) {
-    const topicSnapshot = await data.topicRef.get();
-    const topicData = topicSnapshot.data();
-    data = { ...data, topic: topicData };
+  if (data.subjectRef !== undefined) {
+    const subjectSnapshot = await data.subjectRef.get();
+    const subjectData = subjectSnapshot.data();
+    if (subjectData.topicRef !== undefined) {
+      const topicSnapshot = await subjectData.topicRef.get();
+      const topicData = topicSnapshot.data();
+      data = { ...data, topic: topicData.name ? topicData.name : "" };
+    }
+    data = { ...data, subject: subjectData.name ? subjectData.name : "" };
   }
   if (data.userRef !== undefined) {
     const userSnapshot = await data.userRef.get();
@@ -44,13 +49,22 @@ export async function getPostsByTopicId(topicId) {
   return data;
 }
 
-export async function createPost({ title, content, image, topicId, userId }) {
+export async function getPostsBySubjectId(subjectId) {
+  const subjectRef = firestore.doc(`subjects/${subjectId}`);
+  const query = await all("posts").where("subjectRef", "==", subjectRef)
+  const data = getData(query);
+  return data;
+}
+
+export async function createPost({ title, content, image, subjectId, topicId, userId }) {
+  const subjectRef = firestore.doc(`subjects/${subjectId}`)
   const topicRef = firestore.doc(`topics/${topicId}`)
   const userRef = firestore.doc(`users/${userId}`)
   const postData = {
     title: title,
     content: content, 
     image: image ? image : "A random image url",
+    subjectRef: subjectRef,
     topicRef: topicRef,
     userRef: userRef,
     like: Math.floor(Math.random() * 101),
@@ -58,14 +72,15 @@ export async function createPost({ title, content, image, topicId, userId }) {
   create("posts", postData);
 }
 
-export async function updatePost({ id, title, content, image, topicId }) {
+export async function updatePost({ id, title, content, image, subjectId, topicId }) {
+  const subjectRef = firestore.doc(`subjects/${subjectId}`)
   const topicRef = firestore.doc(`topics/${topicId}`)
   const postUpdateData = {
     title: title,
     content: content, 
     image: image ? image : "A random image url",
+    subjectRef: subjectRef,
     topicRef: topicRef,
-    like: Math.floor(Math.random() * 100),
   }
   update("posts", id, postUpdateData);
 }
@@ -75,11 +90,6 @@ export async function getPostsWithInfo(currentPage) {
   return await Promise.all(
     postsData.map(async (post) => {
       let postWithInfo = { ...post };
-      if (post.topicRef !== undefined) {
-        const topicSnapshot = await post.topicRef.get();
-        const topicData = topicSnapshot.data();
-        postWithInfo = { ...postWithInfo, topic: topicData };
-      }
       if (post.userRef !== undefined) {
         const userSnapshot = await post.userRef.get();
         const userData = userSnapshot.data();

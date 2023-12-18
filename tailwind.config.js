@@ -63,6 +63,7 @@ export default {
       },
       colors: {
         add: "#F48023",
+        commendBorder: "#1682FD",
       },
       fontFamily: {
         inter: ["Inter"],

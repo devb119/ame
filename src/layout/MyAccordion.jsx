@@ -5,7 +5,6 @@ import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { IoIosArrowForward } from "react-icons/io";
 import { FaBookOpen } from "react-icons/fa";
-import { FaCircleCheck } from "react-icons/fa6";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -34,6 +33,9 @@ const AccordionSummary = styled((props) => (
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
+  "@media (max-width: 640px)": {
+    padding: theme.spacing(0.25),
+  },
 }));
 
 const topics = [
@@ -44,21 +46,14 @@ const topics = [
 
 export default function MyAccordion() {
   const [expanded, setExpanded] = React.useState("panel1");
-  const [selectedTopics, setSelectedTopics] = React.useState([]);
+  const [selectedTopic, setSelectedTopic] = React.useState("");
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
   const handleSelectTopic = (topic) => {
-    if (!selectedTopics.includes(topic)) {
-      setSelectedTopics([...selectedTopics, topic]);
-    } else {
-      const selectedTopicsCopy = [...selectedTopics];
-      const i = selectedTopicsCopy.findIndex((el) => el === topic);
-      selectedTopicsCopy.splice(i, 1);
-      setSelectedTopics(selectedTopicsCopy);
-    }
+    setSelectedTopic(topic);
   };
 
   return (
@@ -72,23 +67,22 @@ export default function MyAccordion() {
             <span className="">
               <FaBookOpen />
             </span>
-            <span>Chủ đề</span>
+            <span className="hidden md:block">Chủ đề</span>
           </div>
         </AccordionSummary>
         <AccordionDetails>
           <div className="flex flex-col gap-1">
             {topics.map((t) => (
               <div
-                className="cursor-pointer py-2 hover:bg-gray-200 rounded-lg px-4 transition-all flex justify-between items-center"
+                className={`cursor-pointer py-2 hover:bg-gray-200 rounded-lg px-4 transition-all flex justify-between items-center ${
+                  selectedTopic === t.title ? "bg-gray-200 font-bold" : ""
+                }`}
                 key={t.title}
                 onClick={() => handleSelectTopic(t.title)}
               >
-                <span>{t.title}</span>
-                {selectedTopics.includes(t.title) ? (
-                  <span className="text-green-500">
-                    <FaCircleCheck />
-                  </span>
-                ) : null}
+                <span className="text-xs md:text-sm lg:text-base">
+                  {t.title}
+                </span>
               </div>
             ))}
           </div>

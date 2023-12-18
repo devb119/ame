@@ -10,9 +10,9 @@ function Post({ post, color }) {
   if (!post) return <>No more posts</>;
   return (
     <div
-      onClick={() => navigate(`/posts/detail/${post.id}`)}
+      onClick={() => navigate(`/posts/${post.id}`)}
       className={`flex flex-col relative gap-4 h-[328px] overflow-hidden p-4 cursor-pointer rounded-md shadow-md hover:-translate-y-1 duration-100`}
-      style={{"backgroundColor": color}}
+      style={{ backgroundColor: color }}
     >
       <div className="flex gap-4">
         <img className="w-12 h-12 rounded-full" src={post.user.avatarUrl} />
@@ -25,8 +25,8 @@ function Post({ post, color }) {
       </div>
       <strong>{post.title}</strong>
       <div>
-        {post.content.length > 300
-          ? post.content.substring(0, 250) + "..."
+        {post.content.length > 200
+          ? post.content.substring(0, 200) + "..."
           : post.content}
       </div>
       <div className="flex w-1/3 justify-around text-xs font-thin absolute left-2 bottom-2">

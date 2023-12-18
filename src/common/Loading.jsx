@@ -1,14 +1,17 @@
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
-export default function Loading() {
+// eslint-disable-next-line react/prop-types
+export default function Loading({ height = "100vj" } = {}) {
   return (
-    <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh', // Set the height to full viewport height
-      }}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: height, // Set the height to full viewport height
+      }}
+    >
       <CircularProgress />
     </Box>
   );
