@@ -9,12 +9,16 @@ export async function getPosts(currentPage) {
   return data;
 }
 
-// export async function countPosts() {
-//   let query = all("posts");
-//   const numberOfPosts = await countRecords(query)
-//   console.log(numberOfPosts)
-//   return numberOfPosts
-// }
+export async function getNumberOfPosts() {
+  const numberOfPosts = await all("posts")
+    .get()
+    .then((snap) => {
+      return snap.size;
+    });
+
+  console.log("Count all post function triggered! Total number of posts: " + numberOfPosts)
+  return numberOfPosts;
+}
 
 export async function getPostById(id) {
   let data = await findById("posts", id);
@@ -30,6 +34,7 @@ export async function getPostById(id) {
   }
   if (data.userRef !== undefined) {
     const userSnapshot = await data.userRef.get();
+    console.log(data.userRef.id)
     const userData = userSnapshot.data();
     data = { ...data, user: userData };
   }

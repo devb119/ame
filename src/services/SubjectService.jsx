@@ -6,7 +6,7 @@ export async function getSubjectsByTopicId(topicId) {
   const topicRef = firestore.doc(`topics/${topicId}`);
 
   // Create a query to filter posts by topic reference
-  const query = await all("subjects").where("topicRef", "==", topicRef);
+  const query = await all("subjects","name").where("topicRef", "==", topicRef);
 
   const data = getData(query);
   return data;

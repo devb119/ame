@@ -30,6 +30,14 @@ export async function getCommentsByPostId(postId) {
       if (el.commentRef === false) return false;
       return el.commentRef.id === originalComment.id;
     });
+
+    // Sort subcomment by timestamp
+    originalComment.subComments = originalComment.subComments.sort((sub1, sub2) => {
+      if (sub2.createdAt.seconds !== sub1.createdAt.seconds)
+            return sub1.createdAt.seconds - sub2.createdAt.seconds;
+          else return sub1.createdAt.nanoseconds - sub2.createdAt.nanoseconds;
+    })
+    
     // Return original comment with subcomments added
     return originalComment;
   });

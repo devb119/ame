@@ -1,6 +1,9 @@
 // import React from "react";
 
 // eslint-disable-next-line react/prop-types
+
+import moment from "moment";
+
 function Creator({ avatarURL, name, createdAt }) {
   return (
     <div className="flex flex-row gap-4">
@@ -8,9 +11,7 @@ function Creator({ avatarURL, name, createdAt }) {
       <div>
         <p className="font-semibold text-sm">{name}</p>
         <p className="text-[10px] font-medium text-neutral-500">
-          {new Date(createdAt * 1000).toLocaleDateString() +
-            " " +
-            new Date(createdAt * 1000).toLocaleTimeString()}
+          {moment(createdAt.toDate()).fromNow()}
         </p>
       </div>
     </div>

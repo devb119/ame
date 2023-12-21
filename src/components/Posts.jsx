@@ -5,11 +5,14 @@ import { useEffect, useState } from "react";
 import { getPostsWithInfo } from "../services/PostService";
 import Post from "./Post";
 import { Loading } from "../common";
+import { useStateValue } from "../context/StateProvider";
 
 const Posts = () => {
   const location = useLocation();
   const navigateTo = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [{numberOfPosts}] = useStateValue()
+
 
   const colors = [
     "#FCFAEE",
@@ -61,7 +64,7 @@ const Posts = () => {
           </div>
           <div className="flex flex-wrap p-4 items-center justify-center md:justify-end">
             <Pagination
-              count={2}
+              count={parseInt(numberOfPosts/6) + 1}
               color="primary"
               page={currentPage}
               onChange={handleChange}

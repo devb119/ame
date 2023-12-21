@@ -19,11 +19,11 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
           <Creator
             avatarURL={comment.user.avatarUrl}
             name={comment.user.name}
-            createdAt={comment.createdAt.seconds}
+            createdAt={comment.createdAt}
           />
         </div>
         <p className="text-sm text-justify border-b border-gray-200 pb-4 mb-3">
-          {comment.content}
+          {comment.content.trim()}
         </p>
         <div className="flex justify-between items-center">
           <LikeDislike like={comment.like} dislike={comment.dislike} />

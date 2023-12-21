@@ -123,3 +123,17 @@ export async function findById(collectionName, documentId) {
     return null;
   }
 }
+
+export async function deleteById(collectionName, documentId) {
+  try {
+    // Reference to the document
+    const documentRef = firestore.collection(collectionName).doc(documentId);
+
+    // Delete the document
+    await documentRef.delete();
+
+    console.log(`Document with ID ${documentId} deleted successfully.`);
+  } catch (error) {
+    console.error('Error deleting document:', error);
+  }
+}
