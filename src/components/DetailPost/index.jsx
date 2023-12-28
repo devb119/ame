@@ -112,7 +112,7 @@ function DetailPost() {
                   <div className="flex justify-between">
                     <Creator
                       openUserDialog={true}
-                      avatarURL={post.user.avatarUrl}
+                      avatarUrl={post.user.avatarUrl}
                       name={post.user.name}
                       createdAt={post.createdAt}
                       userId={post.userRef.id}

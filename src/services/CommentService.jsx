@@ -16,7 +16,7 @@ export async function getCommentsByPostId(postId) {
   const commentsWithUserPromises = data.map(async (comment) => {
     const userSnapshot = await comment.userRef.get();
     comment.user = userSnapshot.data();
-    delete comment.userRef;
+    // delete comment.userRef;
     return comment;
   });
 

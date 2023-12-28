@@ -16,8 +16,8 @@ const Posts = ({ searchResult, setSearchResult }) => {
   const [loading, setLoading] = useState(true);
   const [{ numberOfPosts }] = useStateValue();
   const [postNumber, setPostNumber] = useState(numberOfPosts);
-  console.log(postNumber);
-  console.log(numberOfPosts);
+  // console.log(postNumber);
+  // console.log(numberOfPosts);
 
   const colors = [
     "#FCFAEE",

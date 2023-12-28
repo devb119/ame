@@ -24,8 +24,8 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
   const [isDisliked, setIsDisliked] = useState(false);
 
   function checkLikeStatus() {
-    console.log("Like or dislike state: ")
-    console.log(likedOrDislikedComments);
+    // console.log("Like or dislike state: ")
+    // console.log(likedOrDislikedComments);
     likedOrDislikedComments.forEach((likeOrDislikedComment) => {
       if (
         likeOrDislikedComment.commentId == comment.id &&
@@ -98,7 +98,7 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
           type: actionType.SET_LIKED_OR_DISLIKED_COMMENTS,
           payload: updatedLikedOrDislikedComments,
         });
-        console.log(updatedLikedOrDislikedComments)
+        // console.log(updatedLikedOrDislikedComments)
         setIsLiked(false);
       }
     } else {
@@ -122,7 +122,7 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
     });
     checkLikeStatus();
   }, []);
-
+// console.log(comment)
   const handleToggleReplies = () => setHideReplies(!hideReplies);
   const handleToggleReplyForm = () => setNewReply(!newReply);
   return (
@@ -131,10 +131,10 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
         <div className="mb-4">
           <Creator
             openUserDialog={true}
-            avatarURL={comment.user.avatarUrl}
+            avatarUrl={comment.user.avatarUrl}
             name={comment.user.name}
             createdAt={comment.createdAt}
-            userId={comment.user.id}
+            userId={comment.userRef.id}
           />
         </div>
         <p className="text-sm text-justify border-b border-gray-200 pb-4 mb-3">
