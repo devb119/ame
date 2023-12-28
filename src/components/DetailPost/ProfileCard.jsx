@@ -23,8 +23,8 @@ function ProfileCard({ imgURL, user }) {
         {user.instagram && (
           <LinkIcon link={user.instagram} icon={<FiInstagram />}></LinkIcon>
         )}
-        {user.facebook && (
-          <LinkIcon link={user.facebook} icon={<FiFacebook />}></LinkIcon>
+        {user.socialLink && (
+          <LinkIcon link={user.socialLink} icon={<FiFacebook />}></LinkIcon>
         )}
       </div>
     </div>

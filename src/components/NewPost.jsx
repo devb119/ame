@@ -8,6 +8,8 @@ import { getSubjectsByTopicId } from "../services/SubjectService";
 import {createPost, updatePost} from "../services/PostService"
 import { useNavigate, useParams } from "react-router-dom";
 import { getPostById } from "../services/PostService"
+import { useStateValue } from "../context/StateProvider";
+import { actionType } from "../context/reducer";
 
 function NewPost({mode})
 {
@@ -20,17 +22,27 @@ function NewPost({mode})
   const [selectedSubject, setSelectedSubject] = React.useState(undefined);
   const [files, setFiles] = React.useState( [] );
   const [title, setTitle] = React.useState( "" )
+  const [titleErr, setTitleErr] = React.useState( "" );
+  const [contentErr, setContentErr] = React.useState("");
+  
+
   const [content, setContent] = React.useState("");
   const [post, setPost] = React.useState(undefined);
+  const [{ numberOfPosts }, dispatch] = useStateValue()
   
   const isNewPost = mode==="new";
 
+  const fetchTopicsData = async () => {
+      const topicData = await getAllTopics()
+      setTopics(topicData)
+  }
+
   React.useEffect(() => {
     setLoading( true );
+    fetchTopicsData()
     Promise.all([getPostById(id), getAllTopics()])
       .then( ( data ) =>
       {
-
         setPost( data[0] );
         setSelectedTopic( data[0].topicRef.id )
         setSelectedSubject(data[0].subjectRef.id);
@@ -63,6 +75,14 @@ function NewPost({mode})
   const handleSavePost = (e) =>
   {
     e.preventDefault();
+    if ( !title ) {
+      setTitleErr( "Tiêu đề bài viết là bắt buộc" )
+      return;
+    }
+    if ( !content ) {
+      setContentErr( "Nội dung bài viết là bắt buộc" )
+      return;
+    }
     isNewPost
       ? createPost({
           title,
@@ -77,6 +97,10 @@ function NewPost({mode})
             console.error(error);
           })
           .finally(() => {
+            dispatch({
+              type: actionType.SET_NUMBER,
+              payload: numberOfPosts + 1,
+            });
             navigate("/");
           })
       : updatePost({
@@ -110,11 +134,12 @@ function NewPost({mode})
               className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Nhập tiêu đề bài viết"
               required
-                onChange={( e ) =>
-                {
-                  setTitle( e.target.value )
-                }}
+              onChange={(e) => {
+                setTitle( e.target.value );
+                setTitleErr("")
+              }}
             ></textarea>
+            {titleErr && <div className="text-sm pt-2 text-red-600">{titleErr}</div>}
           </div>
           <div className="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 ">
             <div className="px-4 py-2 bg-white rounded-b-lg">
@@ -125,7 +150,7 @@ function NewPost({mode})
                 className="block w-full px-0 text-sm text-gray-800 focus:outline-none bg-white border-0"
                 placeholder="Nhập suy nghĩ của bạn"
                 required
-                onChange={(e) => setContent(e.target.value)}
+                  onChange={( e ) => { setContent( e.target.value ); setContentErr("") }}
               ></textarea>
               <ImageList
                 sx={{ width: "full" }}
@@ -193,6 +218,7 @@ function NewPost({mode})
               </div>
             </div>
           </div>
+          {contentErr && <div className="text-sm -mt-2 pb-4 text-red-600">{contentErr}</div>}
 
           <div className="flex gap-4 mb-4">
             <div>

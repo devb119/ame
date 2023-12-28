@@ -31,16 +31,6 @@ export function all(collectionName, sortOption = "createdAt") {
   }
 }
 
-// export async function countRecords(collectionQuery) {
-//   try {
-//     const snapshot = await collectionQuery.count().get()
-//     console.log(snapshot)
-//     return snapshot.data().count
-//   } catch(error) {
-//     console.error("Something wrong happened", error)
-//   }
-// }
-
 export async function paginate(query, currentPage = 1) {
   const pageSize = 6;
   try {
@@ -137,3 +127,4 @@ export async function deleteById(collectionName, documentId) {
     console.error('Error deleting document:', error);
   }
 }
+

@@ -1,18 +1,23 @@
 // Posts.js
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getPostsWithInfo } from "../services/PostService";
+import {
+  filterPostsByContent,
+  getPostsWithInfo,
+} from "../services/PostService";
 import Post from "./Post";
 import { Loading } from "../common";
 import { useStateValue } from "../context/StateProvider";
 
-const Posts = () => {
+const Posts = ({ searchResult, setSearchResult }) => {
   const location = useLocation();
   const navigateTo = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [{numberOfPosts}] = useStateValue()
-
+  const [{ numberOfPosts }] = useStateValue();
+  const [postNumber, setPostNumber] = useState(numberOfPosts);
+  console.log(postNumber);
+  console.log(numberOfPosts);
 
   const colors = [
     "#FCFAEE",
@@ -32,6 +37,8 @@ const Posts = () => {
   };
 
   const [posts, setPosts] = useState([]);
+  // if (location.state.searchTerm)
+  //   setPosts(filterPostsByContent(location.state.searchTerm, currentPage));
 
   useEffect(() => {
     setLoading(true);
@@ -39,17 +46,35 @@ const Posts = () => {
   }, [currentPage]);
 
   async function fetchData() {
-    getPostsWithInfo(currentPage)
-      .then((data) => {
-        data = data.sort((a, b) => {
-          if (b.createdAt.seconds !== a.createdAt.seconds)
-            return b.createdAt.seconds - a.createdAt.seconds;
-          else return b.createdAt.nanoseconds - a.createdAt.nanoseconds;
-        });
-        setPosts(data);
-      })
-      .finally(() => setLoading(false));
+    if (!searchResult) {
+      console.log("render");
+      getPostsWithInfo(currentPage)
+        .then((data) => {
+          data = data.sort((a, b) => {
+            if (b.createdAt.seconds !== a.createdAt.seconds)
+              return b.createdAt.seconds - a.createdAt.seconds;
+            else return b.createdAt.nanoseconds - a.createdAt.nanoseconds;
+          });
+          setPosts(data);
+          setPostNumber(numberOfPosts);
+        })
+        .finally(() => setLoading(false));
+    }
   }
+
+  useEffect(() => {
+    filter();
+  }, [currentPage, searchResult]);
+
+  const filter = async () => {
+    if (searchResult) {
+      setLoading(true);
+      const data = await filterPostsByContent(searchResult, currentPage);
+      setPosts(data.posts);
+      setPostNumber(data.postNumber);
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -61,10 +86,15 @@ const Posts = () => {
                   <Post post={post} color={colors[index]} key={post.id} />
                 ))
               : "Loading"}
+            {posts.length === 0 && "Không có bài viết"}
           </div>
           <div className="flex flex-wrap p-4 items-center justify-center md:justify-end">
             <Pagination
-              count={parseInt(numberOfPosts/6) + 1}
+              count={
+                parseInt(
+                  ((searchResult ? postNumber : numberOfPosts) - 1) / 6
+                ) + 1
+              }
               color="primary"
               page={currentPage}
               onChange={handleChange}

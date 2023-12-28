@@ -67,6 +67,7 @@ export default {
       },
       fontFamily: {
         inter: ["Inter"],
+        montserrat: ["Montserrat"],
       },
     },
   },

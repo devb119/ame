@@ -45,13 +45,20 @@ export async function getCommentsByPostId(postId) {
   return commentsWithSub;
 }
 
+export async function getCommentsByUserId(userId) {
+  const userRef = firestore.doc(`users/${userId}`);
+  const query = await all("comments").where("userRef", "==", userRef)
+  const data = await getData(query)
+  return data
+}
+
 export async function getNumberOfCommentsByPostId(postId) {
   const postRef = firestore.doc(`posts/${postId}`);
   const numberOfComments = await all("comments")
     .where("postRef", "==", postRef)
     .get()
     .then((snap) => {
-      console.log(snap.size);
+      // console.log(snap.size);
       return snap.size;
     });
   return numberOfComments;

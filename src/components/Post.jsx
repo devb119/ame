@@ -4,25 +4,24 @@
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { FaRegCommentAlt, FaArrowUp } from "react-icons/fa";
+import Creator from "./DetailPost/Creator";
 
 function Post({ post, color }) {
   const navigate = useNavigate();
   if (!post) return <>No more posts</>;
+  console.log(post.user.avatarUrl);
   return (
     <div
       onClick={() => navigate(`/posts/${post.id}`)}
       className={`flex flex-col relative gap-4 h-[328px] overflow-hidden p-4 cursor-pointer rounded-md shadow-md hover:-translate-y-1 duration-100`}
       style={{ backgroundColor: color }}
     >
-      <div className="flex gap-4">
-        <img className="w-12 h-12 rounded-full" src={post.user.avatarUrl} />
-        <div>
-          <strong>{post.user.name}</strong>
-          <p className="text-xs font-thin">
-            {moment(post.createdAt.toDate()).fromNow()}
-          </p>
-        </div>
-      </div>
+      <Creator
+        avatarUrl={post.user.avatarUrl}
+        name={post.user.name}
+        createdAt={post.createdAt}
+        openDialogWhenClick={false}
+      ></Creator>
       <strong>{post.title}</strong>
       <div>
         {post.content.length > 200
