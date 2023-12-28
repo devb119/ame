@@ -16,8 +16,6 @@ const Posts = ({ searchResult, setSearchResult }) => {
   const [loading, setLoading] = useState(true);
   const [{ numberOfPosts }] = useStateValue();
   const [postNumber, setPostNumber] = useState(numberOfPosts);
-  console.log(postNumber);
-  console.log(numberOfPosts);
 
   const colors = [
     "#FCFAEE",
@@ -32,8 +30,15 @@ const Posts = ({ searchResult, setSearchResult }) => {
     new URLSearchParams(location.search).get("page") || 1;
   const currentPage = parseInt(currentPageParam);
 
+  const currentTopicParamId = new URLSearchParams(location.search).get("topicId") || false;
+
   const handleChange = (event, pageValue) => {
-    navigateTo(`/posts?page=${Number(pageValue)}`);
+    if(currentTopicParamId) {
+      navigateTo(`/posts?page=${Number(pageValue)}&topicId=${currentTopicParamId}`);
+    }
+    else {
+      navigateTo(`/posts?page=${Number(pageValue)}`);
+    }
   };
 
   const [posts, setPosts] = useState([]);
@@ -46,8 +51,8 @@ const Posts = ({ searchResult, setSearchResult }) => {
   }, [currentPage]);
 
   async function fetchData() {
-    if (!searchResult) {
-      console.log("render");
+    if (!searchResult && !currentTopicParamId) {
+      console.log("Fetch data")
       getPostsWithInfo(currentPage)
         .then((data) => {
           data = data.sort((a, b) => {
@@ -66,6 +71,10 @@ const Posts = ({ searchResult, setSearchResult }) => {
     filter();
   }, [currentPage, searchResult]);
 
+  useEffect(() => {
+    filterByTopicId();
+  }, [currentPage, currentTopicParamId])
+
   const filter = async () => {
     if (searchResult) {
       setLoading(true);
@@ -75,6 +84,19 @@ const Posts = ({ searchResult, setSearchResult }) => {
       setLoading(false);
     }
   };
+
+  const filterByTopicId = async () => {
+    if (currentTopicParamId) {
+      setLoading(true);
+      console.log(`current topicid param: ${currentTopicParamId}`)
+      const data = await filterPostsByContent(searchResult = "", currentPage, currentTopicParamId);
+      setPosts(data.posts);
+      console.log(`Data posts by topicId: ${data.posts}`)
+      setPostNumber(data.postNumber);
+      console.log(data.postNumber)
+      setLoading(false);
+    }
+  }
 
   return (
     <>
@@ -92,7 +114,7 @@ const Posts = ({ searchResult, setSearchResult }) => {
             <Pagination
               count={
                 parseInt(
-                  ((searchResult ? postNumber : numberOfPosts) - 1) / 6
+                  (postNumber - 1) / 6
                 ) + 1
               }
               color="primary"

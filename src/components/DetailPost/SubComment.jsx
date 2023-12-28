@@ -14,18 +14,14 @@ const SubComment = ({ comment, commentUserName }) => {
   const [isDisliked, setIsDisliked] = useState(false);
 
   function checkLikeStatus() {
-    console.log("Like or dislike state: ")
-    console.log(likedOrDislikedComments);
     likedOrDislikedComments.forEach((likeOrDislikedComment) => {
       if (
         likeOrDislikedComment.commentId == comment.id &&
         likeOrDislikedComment.userId == userId
       ) {
         if (likeOrDislikedComment.likeStatus === true) {
-          console.log(`comment with id ${comment.id} has user like it`);
           setIsLiked(true);
         } else {
-          console.log(`comment with id ${comment.id} has user dislike it`);
           setIsDisliked(true);
         }
       }
@@ -88,7 +84,6 @@ const SubComment = ({ comment, commentUserName }) => {
           type: actionType.SET_LIKED_OR_DISLIKED_COMMENTS,
           payload: updatedLikedOrDislikedComments,
         });
-        console.log(updatedLikedOrDislikedComments)
         setIsLiked(false);
       }
     } else {

@@ -17,35 +17,40 @@ export async function getPosts(currentPage) {
   return data;
 }
 
-export async function filterPostsByContent(searchContent, currentPage = 1) {
+export async function filterPostsByContent(searchContent, currentPage = 1, topicId = false) {
   let query = all("posts");
   const data = await getData(query);
-  const searchData = data.filter((post) => {
+  let searchData = data.filter((post) => {
     return post.content.toLowerCase().includes(searchContent.toLowerCase());
   });
-
+  if(topicId) {
+    searchData = searchData.filter((post) => {
+      return post.topicRef.id == topicId
+    })
+    console.log(searchData.length)
+  }
   const searchDataByPage = searchData.slice(
     (currentPage - 1) * 6,
     (currentPage - 1) * 6 + 6
   );
   return {
     posts: await Promise.all(
-      searchDataByPage.map(async (post) => {
-        let postWithInfo = { ...post };
-        if (post.userRef !== undefined) {
-          const userSnapshot = await post.userRef.get();
-          const userData = userSnapshot.data();
-          postWithInfo = { ...postWithInfo, user: userData };
-        }
-        const numberOfComments = await getNumberOfCommentsByPostId(post.id);
-        const numberOfLikes = await getNumberOfLikesByPostId(post.id);
-        postWithInfo = {
-          ...postWithInfo,
-          comment: numberOfComments,
-          like: numberOfLikes,
-        };
-        return postWithInfo;
-      })
+        searchDataByPage.map(async (post) => {
+          let postWithInfo = { ...post };
+          if (post.userRef !== undefined) {
+            const userSnapshot = await post.userRef.get();
+            const userData = userSnapshot.data();
+            postWithInfo = { ...postWithInfo, user: userData };
+          }
+          const numberOfComments = await getNumberOfCommentsByPostId(post.id);
+          const numberOfLikes = await getNumberOfLikesByPostId(post.id);
+          postWithInfo = {
+            ...postWithInfo,
+            comment: numberOfComments,
+            like: numberOfLikes,
+          };
+          return postWithInfo
+        })
     ),
     postNumber: searchData.length,
   };

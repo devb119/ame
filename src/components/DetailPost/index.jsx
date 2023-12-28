@@ -35,10 +35,8 @@ function DetailPost() {
   const [{ likedPosts, userId }, dispatch] = useStateValue();
 
   function checkLikeStatus() {
-    console.log("Inside this func")
     if(likedPosts !== undefined && likedPosts.length > 0) {
       likedPosts.forEach((likedPost) => {
-        console.log(`Liked post id: ${likedPost.postId} and userId: ${likedPost.userId}`)
         if (likedPost.postId == id && likedPost.userId == userId) {
           setIsLiked(true);
         }
@@ -82,7 +80,6 @@ function DetailPost() {
       getNumberOfLikesByPostId(id),
     ])
       .then((data) => {
-        console.log(data);
         setPost(data[0]);
         setUpvoteNum(data[1]);
       })
@@ -127,7 +124,7 @@ function DetailPost() {
                   <div className="flex justify-between">
                     <Creator
                       openUserDialog={true}
-                      avatarURL={post.user.avatarUrl}
+                      avatarUrl={post.user.avatarUrl}
                       name={post.user.name}
                       createdAt={post.createdAt}
                       userId={post.userRef.id}

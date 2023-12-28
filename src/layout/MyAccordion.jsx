@@ -5,6 +5,7 @@ import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import { IoIosArrowForward } from "react-icons/io";
 import { FaBookOpen } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -39,21 +40,24 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 const topics = [
-  { title: "Chuyên ngành" },
-  { title: "Đại cương" },
-  { title: "Khác" },
+  { title: "Cơ sở ngành", id: "XWxkGr9ti74QS1nqdM2A" },
+  { title: "Chuyên ngành", id: "fUW2jooied2VR6EvfGYv" },
+  { title: "Đại cương", id: "gtkxdlojGhsp3vhVfU19" },
+  { title: "Triết học", id: "trZTdDTflyp0AAHCmZhj" }
 ];
 
 export default function MyAccordion() {
   const [expanded, setExpanded] = React.useState("panel1");
   const [selectedTopic, setSelectedTopic] = React.useState("");
+  const navigateTo = useNavigate()
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
-  const handleSelectTopic = (topic) => {
-    setSelectedTopic(topic);
+  const handleSelectTopic = (title, id) => {
+    setSelectedTopic(title);
+    navigateTo(`/posts?page=1&topicId=${id}`)
   };
 
   return (
@@ -78,7 +82,7 @@ export default function MyAccordion() {
                   selectedTopic === t.title ? "bg-gray-200 font-bold" : ""
                 }`}
                 key={t.title}
-                onClick={() => handleSelectTopic(t.title)}
+                onClick={() => handleSelectTopic(t.title, t.id)}
               >
                 <span className="text-xs md:text-sm lg:text-base">
                   {t.title}

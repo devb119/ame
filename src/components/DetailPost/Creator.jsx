@@ -16,7 +16,7 @@ import moment from "moment";
 import { useStateValue } from "../../context/StateProvider";
 import { actionType } from "../../context/reducer";
 
-function UserInfoDialog({ avatarURL, name, userId }) {
+function UserInfoDialog({ avatarUrl, name, userId }) {
   const [{ openUserDialog }, dispatch] = useStateValue();
   const [rating, setRating] = React.useState({
     upvote: 0,
@@ -71,7 +71,7 @@ function UserInfoDialog({ avatarURL, name, userId }) {
             <CloseIcon />
           </IconButton>
           <div className="flex font-montserrat">
-            <img src={avatarURL} className="w-[100px] h-[100px]"></img>
+            <img src={avatarUrl} className="w-[100px] h-[100px]"></img>
             <div className="p-4">
               <h2 className="font-semibold text-lg">{name}</h2>
               <div>MSSV: 20196776</div>
@@ -105,7 +105,6 @@ function UserInfoDialog({ avatarURL, name, userId }) {
 
 function Creator({ userId, avatarUrl, name, createdAt, openUserDialog }) {
   const [_, dispatch] = useStateValue();
-  console.log(avatarUrl);
 
   return (
     <>
@@ -128,7 +127,7 @@ function Creator({ userId, avatarUrl, name, createdAt, openUserDialog }) {
         </div>
       </div>
       <UserInfoDialog
-        avatarURL={avatarUrl}
+        avatarUrl={avatarUrl}
         name={name}
         userId={userId}
       ></UserInfoDialog>
