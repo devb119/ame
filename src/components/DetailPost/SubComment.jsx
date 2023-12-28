@@ -8,7 +8,7 @@ const SubComment = ({ sub, commentUserName }) => {
       <div className="mb-2">
         <Creator
           openUserDialog={true}
-          avatarURL={sub.user.avatarUrl}
+          avatarUrl={sub.user.avatarUrl}
           name={sub.user.name}
           createdAt={sub.createdAt}
           userId={sub.user.id}

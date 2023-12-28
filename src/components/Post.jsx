@@ -9,7 +9,7 @@ import Creator from "./DetailPost/Creator";
 function Post({ post, color }) {
   const navigate = useNavigate();
   if (!post) return <>No more posts</>;
-  console.log(post.user.avatarUrl);
+  // console.log(post.user.avatarUrl);
   return (
     <div
       onClick={() => navigate(`/posts/${post.id}`)}

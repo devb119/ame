@@ -5,6 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { BiUpvote } from "react-icons/bi";
 import { BiLike } from "react-icons/bi";
 import { BiDislike } from "react-icons/bi";
+import { SlBadge } from "react-icons/sl";
 import {
   getNumberOfPostLikesUserReceive,
   getNumberOfCommentLikeUserReceive,
@@ -43,7 +44,8 @@ function UserInfoDialog({ avatarURL, name, userId }) {
       .finally(() => {
         setLoading(false);
       });
-  }, [userId]);
+  }, [userId] );
+
   const handleClose = () => {
     dispatch({
       type: actionType.SET_OPEN_USER_DIALOG,
@@ -51,7 +53,15 @@ function UserInfoDialog({ avatarURL, name, userId }) {
     });
   };
   const { upvote, like, dislike } = rating;
-
+  const cal = upvote + like - dislike / 2;
+  let badge;
+  if (cal >= 100 && cal <= 499) {
+    badge = <SlBadge color="#ab8444" />;
+  } else if (cal > 499 && cal <= 999) {
+    badge = <SlBadge color="#9c9994" />;
+  } else if (cal > 999) {
+    badge = <SlBadge color="#ffe83b" />;
+  } else badge = <></>;
   return (
     <Dialog onClose={handleClose} open={openUserDialog}>
       {loading ? (
@@ -76,7 +86,10 @@ function UserInfoDialog({ avatarURL, name, userId }) {
               <h2 className="font-semibold text-lg">{name}</h2>
               <div>MSSV: 20196776</div>
               <div>Khóa: 64</div>
-            </div>
+              </div>
+              <div> 
+                {badge}
+              </div>
           </div>
           <div className="flex flex-col p-8">
             <div className="flex items-center justify-around text-xl font-semibold font-montserrat">
@@ -105,13 +118,15 @@ function UserInfoDialog({ avatarURL, name, userId }) {
 
 function Creator({ userId, avatarUrl, name, createdAt, openUserDialog }) {
   const [_, dispatch] = useStateValue();
-  console.log(avatarUrl);
+  // console.log(avatarUrl);
 
   return (
     <>
       <div
         className="flex flex-row gap-4 cursor-pointer"
-        onClick={(e) => {
+        onClick={( e ) =>
+        {
+          console.log(userId)
           openUserDialog &&
             dispatch({
               type: actionType.SET_OPEN_USER_DIALOG,
