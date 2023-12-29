@@ -9,13 +9,18 @@ import {
 } from "../services/UserService";
 import { useStateValue } from "../context/StateProvider";
 import { useRef } from "react";
+import { all, findById, getData } from "../services/BaseService";
+import { MenuItem, FormControl, Select } from "@mui/material";
+import { actionType } from "../context/reducer";
 
 const Header = ({ setSearchResult }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchHistory, setSearchHistory] = useState([]);
   const [showHistoryStatus, setShowHistoryStatus] = useState("hidden");
-  const [{ userId }] = useStateValue();
+  const [avatarUrl, setAvatarUrl] = useState(undefined)
+  const [{ userId }, dispatch] = useStateValue();
   const navigate = useNavigate();
+  const [users, setUsers] = useState([])
 
   const search = (e) => {
     e.preventDefault();
@@ -31,8 +36,10 @@ const Header = ({ setSearchResult }) => {
   };
 
   useEffect(() => {
+    getAllUsers()
     fetchData();
-  }, []);
+    fetchCurrentUserData();
+  }, [userId]);
 
   const historyRef = useRef(null);
 
@@ -44,6 +51,26 @@ const Header = ({ setSearchResult }) => {
     const historyList = await getSearchHistoryByUserId(userId);
     setSearchHistory(historyList);
   };
+
+  const fetchCurrentUserData = async () => {
+    const user = await findById("users", userId)
+    setAvatarUrl(user.avatarUrl)
+  }
+
+  const getAllUsers = async () => {
+    const usersData = await all('users', 'name');
+    const users = await getData(usersData)
+    setUsers(users);
+  }
+
+  const handleChange = (event) => {
+    console.log(event.target.value);
+    dispatch({
+      type: actionType.SET_USER,
+      payload: event.target.value
+    })
+  }
+  
   return (
     <div className="flex justify-between px-4 py-2 h-[10vh] shadow-lg items-center relative z-10">
       <Link
@@ -76,6 +103,7 @@ const Header = ({ setSearchResult }) => {
           {searchHistory2?.slice(0, 5).map((history) => (
             <li
               className="px-4 py-2 hover:bg-gray-200 hover:cursor-pointer"
+              key={Math.random()}
               onClick={(e) => {
                 setSearchTerm(e.target.innerText);
                 setShowHistoryStatus("hidden");
@@ -95,10 +123,23 @@ const Header = ({ setSearchResult }) => {
           onClick={() => navigate("/newpost")}
         />
         <img
-          src="avatar.jpeg"
+          src={avatarUrl}
           alt="Avatar"
-          className="rounded-full w-10 md:w-14 cursor-pointer"
+          className="rounded-full w-10 h-14 md:w-14 cursor-pointer"
         />
+        <FormControl sx={{ minWidth: 100 }}>
+        <Select
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
+          value={userId}
+          label="Age"
+          onChange={handleChange}
+        >
+          {users.map((user) => (
+            <MenuItem value={user.id} key={user.id}>{user.name}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       </div>
     </div>
   );

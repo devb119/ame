@@ -14,6 +14,8 @@ const SubComment = ({ comment, commentUserName }) => {
   const [isDisliked, setIsDisliked] = useState(false);
 
   function checkLikeStatus() {
+    let findLike = false;
+    let findDislike = false;
     likedOrDislikedComments.forEach((likeOrDislikedComment) => {
       if (
         likeOrDislikedComment.commentId == comment.id &&
@@ -21,11 +23,19 @@ const SubComment = ({ comment, commentUserName }) => {
       ) {
         if (likeOrDislikedComment.likeStatus === true) {
           setIsLiked(true);
+          findLike = true
         } else {
           setIsDisliked(true);
+          findDislike = true
         }
       }
     });
+    if(findLike == false) {
+      setIsLiked(false)
+    }
+    if(findDislike == false) {
+      setIsDisliked(false)
+    }
   }
 
   async function getLikeNumberForComment() {
@@ -38,7 +48,7 @@ const SubComment = ({ comment, commentUserName }) => {
 
   const handleLike = async (newIsLiked) => {
     if (newIsLiked) {
-      await likeOrDislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, true);
+      await likeOrDislikeComment(userId, comment.id, true);
       setLike(like + 1);
       likedOrDislikedComments.push({id: 'new', commentId: comment.id, userId: userId, likeStatus: true })
       dispatch({
@@ -52,11 +62,11 @@ const SubComment = ({ comment, commentUserName }) => {
           type: actionType.SET_LIKED_OR_DISLIKED_COMMENTS,
           payload: updatedLikedOrDislikedComments,
         });
-        await unlikeOrUndislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, false);
+        await unlikeOrUndislikeComment(userId, comment.id, false);
         setIsDisliked(false);
       }
     } else {
-      await unlikeOrUndislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, true);
+      await unlikeOrUndislikeComment(userId, comment.id, true);
       const updatedLikedOrDislikedComments = likedOrDislikedComments.filter((e) => (e.commentId !== comment.id))
       setLike(like - 1);
       dispatch({
@@ -69,7 +79,7 @@ const SubComment = ({ comment, commentUserName }) => {
 
   const handleDislike = async (newIsDisliked) => {
     if (newIsDisliked) {
-      await likeOrDislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, false);
+      await likeOrDislikeComment(userId, comment.id, false);
       likedOrDislikedComments.push({id: 'new', commentId: comment.id, userId: userId, likeStatus: false })
       dispatch({
         type: actionType.SET_LIKED_OR_DISLIKED_COMMENTS,
@@ -78,7 +88,7 @@ const SubComment = ({ comment, commentUserName }) => {
       setDislike(dislike + 1);
       if (isLiked) {
         setLike(like - 1);
-        await unlikeOrUndislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, true);
+        await unlikeOrUndislikeComment(userId, comment.id, true);
         const updatedLikedOrDislikedComments = likedOrDislikedComments.filter((e) => (e.commentId !== comment.id || e.likeStatus !== true))
         dispatch({
           type: actionType.SET_LIKED_OR_DISLIKED_COMMENTS,
@@ -87,7 +97,7 @@ const SubComment = ({ comment, commentUserName }) => {
         setIsLiked(false);
       }
     } else {
-      await unlikeOrUndislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, false);
+      await unlikeOrUndislikeComment(userId, comment.id, false);
       setDislike(dislike - 1);
       const updatedLikedOrDislikedComments = likedOrDislikedComments.filter((e) => (e.commentId !== comment.id))
       dispatch({
@@ -106,13 +116,13 @@ const SubComment = ({ comment, commentUserName }) => {
       setDislike(dislikeNumber);
     });
     checkLikeStatus();
-  }, []);
+  }, [userId, likedOrDislikedComments]);
   return (
     <div className="ml-auto mb-2 w-11/12 py-4 px-8 shadow-lg bg-white border-l-8 border-commendBorder">
       <div className="mb-2">
         <Creator
           openUserDialog={true}
-          avatarURL={comment.user.avatarUrl}
+          avatarUrl={comment.user.avatarUrl}
           name={comment.user.name}
           createdAt={comment.createdAt}
           userId={comment.user.id}

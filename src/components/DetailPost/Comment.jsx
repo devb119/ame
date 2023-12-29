@@ -24,6 +24,9 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
   const [isDisliked, setIsDisliked] = useState(false);
 
   function checkLikeStatus() {
+    console.log("Trigger check like")
+    let findLike = false;
+    let findDislike = false
     likedOrDislikedComments.forEach((likeOrDislikedComment) => {
       if (
         likeOrDislikedComment.commentId == comment.id &&
@@ -31,11 +34,19 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
       ) {
         if (likeOrDislikedComment.likeStatus === true) {
           setIsLiked(true);
+          findLike = true
         } else {
           setIsDisliked(true);
+          findDislike = true
         }
       }
     });
+    if(findLike == false) {
+      setIsLiked(false)
+    }
+    if(findDislike == false) {
+      setIsDisliked(false)
+    }
   }
 
   async function getLikeNumberForComment() {
@@ -48,7 +59,7 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
 
   const handleLike = async (newIsLiked) => {
     if (newIsLiked) {
-      await likeOrDislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, true);
+      await likeOrDislikeComment(userId, comment.id, true);
       setLike(like + 1);
       likedOrDislikedComments.push({id: 'new', commentId: comment.id, userId: userId, likeStatus: true })
       dispatch({
@@ -62,11 +73,11 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
           type: actionType.SET_LIKED_OR_DISLIKED_COMMENTS,
           payload: updatedLikedOrDislikedComments,
         });
-        await unlikeOrUndislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, false);
+        await unlikeOrUndislikeComment(userId, comment.id, false);
         setIsDisliked(false);
       }
     } else {
-      await unlikeOrUndislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, true);
+      await unlikeOrUndislikeComment(userId, comment.id, true);
       const updatedLikedOrDislikedComments = likedOrDislikedComments.filter((e) => (e.commentId !== comment.id))
       setLike(like - 1);
       dispatch({
@@ -79,7 +90,7 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
 
   const handleDislike = async (newIsDisliked) => {
     if (newIsDisliked) {
-      await likeOrDislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, false);
+      await likeOrDislikeComment(userId, comment.id, false);
       likedOrDislikedComments.push({id: 'new', commentId: comment.id, userId: userId, likeStatus: false })
       dispatch({
         type: actionType.SET_LIKED_OR_DISLIKED_COMMENTS,
@@ -88,7 +99,7 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
       setDislike(dislike + 1);
       if (isLiked) {
         setLike(like - 1);
-        await unlikeOrUndislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, true);
+        await unlikeOrUndislikeComment(userId, comment.id, true);
         const updatedLikedOrDislikedComments = likedOrDislikedComments.filter((e) => (e.commentId !== comment.id || e.likeStatus !== true))
         dispatch({
           type: actionType.SET_LIKED_OR_DISLIKED_COMMENTS,
@@ -97,7 +108,7 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
         setIsLiked(false);
       }
     } else {
-      await unlikeOrUndislikeComment("7begC0zuZY0c8Qd2GIRm", comment.id, false);
+      await unlikeOrUndislikeComment(userId, comment.id, false);
       setDislike(dislike - 1);
       const updatedLikedOrDislikedComments = likedOrDislikedComments.filter((e) => (e.commentId !== comment.id))
       dispatch({
@@ -116,7 +127,7 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
       setDislike(dislikeNumber);
     });
     checkLikeStatus();
-  }, []);
+  }, [userId, likedOrDislikedComments]);
 
   const handleToggleReplies = () => setHideReplies(!hideReplies);
   const handleToggleReplyForm = () => setNewReply(!newReply);
@@ -126,7 +137,7 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
         <div className="mb-4">
           <Creator
             openUserDialog={true}
-            avatarURL={comment.user.avatarUrl}
+            avatarUrl={comment.user.avatarUrl}
             name={comment.user.name}
             createdAt={comment.createdAt}
             userId={comment.user.id}

@@ -36,11 +36,16 @@ function DetailPost() {
 
   function checkLikeStatus() {
     if(likedPosts !== undefined && likedPosts.length > 0) {
+      let find = false;
       likedPosts.forEach((likedPost) => {
         if (likedPost.postId == id && likedPost.userId == userId) {
           setIsLiked(true);
+          find = true
         }
       });
+      if(find === false) {
+        setIsLiked(false)
+      }
     }
   }
 
@@ -69,7 +74,7 @@ function DetailPost() {
 
   useEffect(() => {
     checkLikeStatus()
-  }, [likedPosts])
+  }, [likedPosts, userId])
 
   useEffect( () =>
   {
@@ -86,7 +91,6 @@ function DetailPost() {
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
 
-    console.log(`id: ${localStorage.getItem('id')}`)
     setId(localStorage.getItem('id'))
     return () => {
       localStorage.removeItem('id');

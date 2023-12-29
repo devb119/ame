@@ -48,11 +48,10 @@ const Posts = ({ searchResult, setSearchResult }) => {
   useEffect(() => {
     setLoading(true);
     fetchData();
-  }, [currentPage]);
+  }, [currentPage, numberOfPosts]);
 
   async function fetchData() {
     if (!searchResult && !currentTopicParamId) {
-      console.log("Fetch data")
       getPostsWithInfo(currentPage)
         .then((data) => {
           data = data.sort((a, b) => {
@@ -88,12 +87,9 @@ const Posts = ({ searchResult, setSearchResult }) => {
   const filterByTopicId = async () => {
     if (currentTopicParamId) {
       setLoading(true);
-      console.log(`current topicid param: ${currentTopicParamId}`)
       const data = await filterPostsByContent(searchResult = "", currentPage, currentTopicParamId);
       setPosts(data.posts);
-      console.log(`Data posts by topicId: ${data.posts}`)
       setPostNumber(data.postNumber);
-      console.log(data.postNumber)
       setLoading(false);
     }
   }

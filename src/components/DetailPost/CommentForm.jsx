@@ -5,15 +5,16 @@ import { BiComment } from "react-icons/bi";
 import { BsEmojiSmile } from "react-icons/bs";
 import { IoImageOutline } from "react-icons/io5";
 import { createComment } from "../../services/CommentService";
+import { useStateValue } from "../../context/StateProvider";
 
 const CommentForm = ({
   postId,
   commentId = false,
-  userId = "7begC0zuZY0c8Qd2GIRm",
   postingComment,
   setPostingComment,
 } = {}) => {
   const [newComment, setNewComment] = useState("");
+  const [{ userId }] = useStateValue()
 
   const handleCommentChange = (e) => {
     setNewComment(e.target.value);

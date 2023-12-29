@@ -28,7 +28,7 @@ function NewPost({mode})
 
   const [content, setContent] = React.useState("");
   const [post, setPost] = React.useState(undefined);
-  const [{ numberOfPosts }, dispatch] = useStateValue()
+  const [{ numberOfPosts, userId }, dispatch] = useStateValue()
   
   const isNewPost = mode==="new";
 
@@ -90,7 +90,7 @@ function NewPost({mode})
           image: "hdjfh",
           subjectId: selectedSubject,
           topicId: selectedTopic,
-          userId: "7begC0zuZY0c8Qd2GIRm",
+          userId: userId,
         })
           // .then((data) => console.log(data))
           .catch((error) => {

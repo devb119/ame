@@ -12,7 +12,7 @@ import {
 } from "./services/LikeService";
 
 function App() {
-  const [, dispatch] = useStateValue();
+  const [{ userId }, dispatch] = useStateValue();
   const [searchResult, setSearchResult] = useState("");
 
   const handleInitialContext = async () => {
@@ -21,26 +21,26 @@ function App() {
       type: actionType.SET_NUMBER,
       payload: numberOfPosts,
     });
-    const likedPosts = await getLikedPostsByUserId("7begC0zuZY0c8Qd2GIRm");
+    const likedPosts = await getLikedPostsByUserId(userId);
     dispatch({
       type: actionType.SET_LIKED_POSTS,
       payload: likedPosts,
     });
     const likedOrDislikedComments = await getLikedOrDislikedCommentsByUserId(
-      "7begC0zuZY0c8Qd2GIRm"
+      userId
     );
     dispatch({
       type: actionType.SET_LIKED_OR_DISLIKED_COMMENTS,
       payload: likedOrDislikedComments,
     });
-    // console.log("Initial state:")
-    // console.log(likedPosts)
-    // console.log(likedOrDislikedComments)
+    console.log("Initial state:")
+    console.log(likedPosts)
+    console.log(likedOrDislikedComments)
   };
 
   useEffect(() => {
     handleInitialContext();
-  }, []);
+  }, [userId]);
 
   return (
     <Routes>
