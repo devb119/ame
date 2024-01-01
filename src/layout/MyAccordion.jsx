@@ -43,7 +43,8 @@ const topics = [
   { title: "Cơ sở ngành", id: "XWxkGr9ti74QS1nqdM2A" },
   { title: "Chuyên ngành", id: "fUW2jooied2VR6EvfGYv" },
   { title: "Đại cương", id: "gtkxdlojGhsp3vhVfU19" },
-  { title: "Triết học", id: "trZTdDTflyp0AAHCmZhj" }
+  { title: "Các môn triết", id: "trZTdDTflyp0AAHCmZhj" },
+  { title: "Thể chất", id: "8nONfgbkMBMrP4FmSAaV" }
 ];
 
 export default function MyAccordion() {

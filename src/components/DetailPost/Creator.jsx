@@ -16,8 +16,9 @@ import moment from "moment";
 import { useStateValue } from "../../context/StateProvider";
 import { actionType } from "../../context/reducer";
 
-function UserInfoDialog({ avatarUrl, name, userId }) {
+function UserInfoDialog({ avatarUrl, name, userId, createdAt }) {
   const [{ openUserDialog }, dispatch] = useStateValue();
+  const [isOpen, setIsOpen] = React.useState(false)
   const [rating, setRating] = React.useState({
     upvote: 0,
     like: 0,
@@ -25,6 +26,14 @@ function UserInfoDialog({ avatarUrl, name, userId }) {
   });
   const [loading, setLoading] = React.useState(true);
 
+  const openDialog = () => {
+    if(openUserDialog.isOpen === true && openUserDialog.userId === userId && openUserDialog.createdAt === createdAt) {
+      setIsOpen(true)
+    }
+    else {
+      setIsOpen(false)
+    }
+  }
   React.useEffect(() => {
     setLoading(true);
     Promise.all([
@@ -43,21 +52,26 @@ function UserInfoDialog({ avatarUrl, name, userId }) {
       .finally(() => {
         setLoading(false);
       });
-  }, [userId]);
+    openDialog()
+  }, [openUserDialog, userId]);
   const handleClose = () => {
     dispatch({
       type: actionType.SET_OPEN_USER_DIALOG,
-      payload: false,
+      payload: {
+        isOpen: false,
+        userId: undefined,
+        createdAt: undefined
+      },
     });
   };
   const { upvote, like, dislike } = rating;
 
   return (
-    <Dialog onClose={handleClose} open={openUserDialog}>
+    <Dialog onClose={handleClose} open={isOpen}>
       {loading ? (
-        <div>loading</div>
+        <div className="p-8">Loading...</div>
       ) : (
-        <div className="w-[400px] h-[250px]">
+        <div className="w-[480px] h-[300px] p-8">
           <IconButton
             aria-label="close"
             onClick={handleClose}
@@ -70,6 +84,13 @@ function UserInfoDialog({ avatarUrl, name, userId }) {
           >
             <CloseIcon />
           </IconButton>
+          <div className="absolute top-7 right-9">
+            {(upvote + like - dislike/2 >= 20 && (upvote + like - dislike/2 < 50)) ? <img src="/bronze.png" width={65} height={85} /> : ""}
+
+            {(upvote + like - dislike/2 >= 50 && (upvote + like - dislike/2 < 100)) ? <img src="/silver.png" width={55} height={75} /> : ""}
+
+            {(upvote + like - dislike/2 >= 100) ? <img src="/gold.png" width={55} height={75} /> : ""}
+          </div>
           <div className="flex font-montserrat">
             <img src={avatarUrl} className="w-[100px] h-[100px]"></img>
             <div className="p-4">
@@ -114,7 +135,11 @@ function Creator({ userId, avatarUrl, name, createdAt, openUserDialog }) {
           openUserDialog &&
             dispatch({
               type: actionType.SET_OPEN_USER_DIALOG,
-              payload: true,
+              payload: {
+                isOpen: true,
+                userId: userId,
+                createdAt: createdAt
+              },
             });
         }}
       >
@@ -130,6 +155,7 @@ function Creator({ userId, avatarUrl, name, createdAt, openUserDialog }) {
         avatarUrl={avatarUrl}
         name={name}
         userId={userId}
+        createdAt={createdAt}
       ></UserInfoDialog>
     </>
   );

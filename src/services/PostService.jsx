@@ -20,9 +20,17 @@ export async function getPosts(currentPage) {
 export async function filterPostsByContent(searchContent, currentPage = 1, topicId = false) {
   let query = all("posts");
   const data = await getData(query);
-  let searchData = data.filter((post) => {
+  let searchDataByContent = data.filter((post) => {
     return post.content.toLowerCase().includes(searchContent.toLowerCase());
   });
+
+  let searchDataByTitle = data.filter((post) => {
+    return post.title.toLowerCase().includes(searchContent.toLowerCase())
+  })
+
+  const searchDataSet = new Set(searchDataByContent.concat(searchDataByTitle));
+  let searchData = Array.from(searchDataSet);
+  
   if(topicId) {
     searchData = searchData.filter((post) => {
       return post.topicRef.id == topicId

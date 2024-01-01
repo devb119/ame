@@ -140,7 +140,7 @@ const Comment = ({ comment, postingComment, setPostingComment }) => {
             avatarUrl={comment.user.avatarUrl}
             name={comment.user.name}
             createdAt={comment.createdAt}
-            userId={comment.user.id}
+            userId={comment.userRef.id}
           />
         </div>
         <p className="text-sm text-justify border-b border-gray-200 pb-4 mb-3">

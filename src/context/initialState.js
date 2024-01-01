@@ -3,5 +3,9 @@ export const initialState = {
     likedPosts: [],
     likedOrDislikedComments: [],
     userId: "7begC0zuZY0c8Qd2GIRm",
-    openUserDialog: false,
+    openUserDialog: {
+        isOpen: false,
+        userId: undefined,
+        createdAt: undefined,
+    }
 };

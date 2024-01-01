@@ -14,6 +14,7 @@ import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 import SortDropdown from "./SortDropdown";
 import {
+  getNumberOfLikesByCommentId,
   getNumberOfLikesByPostId,
   likePost,
   unlikePost,
@@ -104,17 +105,31 @@ function DetailPost() {
       .finally(() => setLoadingComments(false));
   }, [id, postingComment]);
 
-  const sort = (type) => {
+  const sort = async (type) => {
     setSortType(type);
-    type === "time"
-      ? setComments(
-          comments.sort((a, b) => {
-            if (b.createdAt.seconds !== a.createdAt.seconds)
-              return b.createdAt.seconds - a.createdAt.seconds;
-            else return b.createdAt.nanoseconds - a.createdAt.nanoseconds;
-          })
-        )
-      : setComments(comments.sort((a, b) => b.like - a.like));
+    if (type === "time") {
+      const sortedComments = [...comments].sort((a, b) => {
+        if (b.createdAt.seconds !== a.createdAt.seconds)
+          return b.createdAt.seconds - a.createdAt.seconds;
+        else return b.createdAt.nanoseconds - a.createdAt.nanoseconds;
+      });
+      setComments(sortedComments);
+    } else {
+      const sortedComments = await sortCommentsByLikes(comments);
+      setComments(sortedComments);
+    }
+  };
+  
+  const sortCommentsByLikes = async (comments) => {
+    const sortedComments = await Promise.all(comments.map(async (comment) => {
+      const likeNum = await getNumberOfLikesByCommentId(comment.id);
+      return { comment, likeNum };
+    }));
+  
+    sortedComments.sort((a, b) => b.likeNum - a.likeNum);
+  
+    const result = sortedComments.map((item) => item.comment);
+    return result;
   };
 
   return (

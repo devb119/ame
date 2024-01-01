@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 // import React from 'react'
 
-import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { FaRegCommentAlt, FaArrowUp } from "react-icons/fa";
 import Creator from "./DetailPost/Creator";
@@ -18,6 +17,7 @@ function Post({ post, color }) {
       <Creator
         avatarUrl={post.user.avatarUrl}
         name={post.user.name}
+        userId={post.user.id}
         createdAt={post.createdAt}
         openDialogWhenClick={false}
       ></Creator>
@@ -27,7 +27,7 @@ function Post({ post, color }) {
           ? post.content.substring(0, 200) + "..."
           : post.content}
       </div>
-      <div className="flex w-1/3 justify-around text-xs font-thin absolute left-2 bottom-2">
+      <div className="flex w-1/3 justify-around text-xs absolute left-2 bottom-2">
         <div className="flex justify-center items-center gap-2">
           <span>{post.comment ? post.comment : 0}</span> <FaRegCommentAlt />
         </div>
